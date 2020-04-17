@@ -104,17 +104,15 @@ class sspmod_imapauth_Auth_Source_MyAuth extends sspmod_core_Auth_UserPassBase {
 	elseif (imap_reopen($sess,$imap."Sent",OP_READONLY))
 		{
 		if(($last=imap_num_msg($sess))>0)
-		{
-		$head2=imap_fetchheader($sess,$last);
-		preg_match('/From\:(?:.*<| )([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)(?:>?)/m',$head2,$matches);
-		$candidate=trim(($matches[1]));
-		if(preg_match('/(?<=[<\[]).*?(?=[>\]]$)/',$candidate,$stripbr))
-			{
-				$candidate=$stripbr[0];
-				if(filter_var($candidate,FILTER_VALIDATE_EMAIL)) $email_imap=$candidate;
-				}
-		}
-		}
+		    {
+		    $head2=imap_fetchheader($sess,$last);
+		    preg_match('/From\:(?:.*<| )([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)(?:>?)/m',$head2,$matches);
+		    $candidate=trim(($matches[1]));
+		    if(preg_match('/(?<=[<\[]).*?(?=[>\]]$)/',$candidate,$stripbr))
+			    	$candidate=$stripbr[0];
+				    if(filter_var($candidate,FILTER_VALIDATE_EMAIL)) $email_imap=$candidate;
+		    }
+	    }
 imap_close($sess); 
 	}
 
