@@ -95,26 +95,29 @@ class sspmod_imapauth_Auth_Source_MyAuth extends sspmod_core_Auth_UserPassBase {
 
 		if ($sess === false ) {
 			throw new SimpleSAML_Error_Error('WRONGUSERPASS');
-		}
-	else
+		} else
 	{
 	if(($last=imap_num_msg($sess))>0)
 		{
 		$head1=imap_fetchheader($sess,$last);
 		preg_match('/Envelope\-to\:(.+)/m',$head1,$matches);
 		$candidate=trim(($matches[1]));
-			if(filter_var($candidate,FILTER_VALIDATE_EMAIL)) $email_imap=$candidate;
-		}
-	elseif (imap_reopen($sess,$imap."Sent",OP_READONLY))
+			if(filter_var($candidate,FILTER_VALIDATE_EMAIL)) {
+				$email_imap=$candidate;
+			}
+		} elseif (imap_reopen($sess,$imap."Sent",OP_READONLY))
 		{
 		if(($last=imap_num_msg($sess))>0)
 			{
 			$head2=imap_fetchheader($sess,$last);
 			preg_match('/From\:(?:.*<| )([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)(?:>?)/m',$head2,$matches);
 			$candidate=trim(($matches[1]));
-			if(preg_match('/(?<=[<\[]).*?(?=[>\]]$)/',$candidate,$stripbr))
-					$candidate=$stripbr[0];
-					if(filter_var($candidate,FILTER_VALIDATE_EMAIL)) $email_imap=$candidate;
+			if(preg_match('/(?<=[<\[]).*?(?=[>\]]$)/',$candidate,$stripbr)) {
+								$candidate=$stripbr[0];
+			}
+					if(filter_var($candidate,FILTER_VALIDATE_EMAIL)) {
+						$email_imap=$candidate;
+					}
 			}
 		}
 imap_close($sess); 
