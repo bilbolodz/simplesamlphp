@@ -106,7 +106,7 @@ class sspmod_imapauth_Auth_Source_MyAuth extends sspmod_core_Auth_UserPassBase {
 		if(($last=imap_num_msg($sess))>0)
 		{
 		$head2=imap_fetchheader($sess,$last);
-		preg_match('/From\:(.+)/m',$head2,$matches);
+		preg_match('/From\:(?:.*<| )([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)(?:>?)/m',$head2,$matches);
 		$candidate=trim(($matches[1]));
 		if(preg_match('/(?<=[<\[]).*?(?=[>\]]$)/',$candidate,$stripbr))
 			{
