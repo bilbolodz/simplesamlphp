@@ -22,7 +22,9 @@ class sspmod_imapauth_Auth_Source_MyAuth extends sspmod_core_Auth_UserPassBase {
 		parent::__construct($info, $config);
 
 	if (isset($config['use_rc_database'])) {
-		if ($config['use_rc_database'] == true) $this->use_rc_database = $config['use_rc_database'];
+		if ($config['use_rc_database'] == true) {
+			$this->use_rc_database = $config['use_rc_database'];
+		}
 	}
 
 		if (!is_string($config['dsn'])) {
@@ -80,7 +82,9 @@ class sspmod_imapauth_Auth_Source_MyAuth extends sspmod_core_Auth_UserPassBase {
 	$uid=$username;
 
 	$imap = $this->imap_hostname . ":" . $this->imap_port . "/" . $this->imap_security;
-	if (isset($this->imap_additional_options)) $imap= $imap . $this->imap_additional_options;
+	if (isset($this->imap_additional_options)) {
+		$imap= $imap . $this->imap_additional_options;
+	}
 	
 	$imap = "{" . $imap . "}";
 
@@ -104,15 +108,15 @@ class sspmod_imapauth_Auth_Source_MyAuth extends sspmod_core_Auth_UserPassBase {
 	elseif (imap_reopen($sess,$imap."Sent",OP_READONLY))
 		{
 		if(($last=imap_num_msg($sess))>0)
-		    {
-		    $head2=imap_fetchheader($sess,$last);
-		    preg_match('/From\:(?:.*<| )([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)(?:>?)/m',$head2,$matches);
-		    $candidate=trim(($matches[1]));
-		    if(preg_match('/(?<=[<\[]).*?(?=[>\]]$)/',$candidate,$stripbr))
-			    	$candidate=$stripbr[0];
-				    if(filter_var($candidate,FILTER_VALIDATE_EMAIL)) $email_imap=$candidate;
-		    }
-	    }
+			{
+			$head2=imap_fetchheader($sess,$last);
+			preg_match('/From\:(?:.*<| )([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)(?:>?)/m',$head2,$matches);
+			$candidate=trim(($matches[1]));
+			if(preg_match('/(?<=[<\[]).*?(?=[>\]]$)/',$candidate,$stripbr))
+					$candidate=$stripbr[0];
+					if(filter_var($candidate,FILTER_VALIDATE_EMAIL)) $email_imap=$candidate;
+			}
+		}
 imap_close($sess); 
 	}
 
@@ -120,7 +124,9 @@ imap_close($sess);
 	$user_id=$username . "_" . $this->mail_host;
 	$name=$username;
 
-	if ($email_imap != "") $email=$email_imap;
+	if ($email_imap != "") {
+		$email=$email_imap;
+	}
 
 if ($this->use_rc_database == true)
 {
@@ -130,10 +136,10 @@ if ($this->use_rc_database == true)
 		$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		$db->exec("SET NAMES 'utf8'");
         
-		$table_name=$this->table_name;
-		$sql_username=$username;
+		$table_name = $this->table_name;
+		$sql_username = $username;
 
-		$sql = 'SELECT user_id,username,name,email FROM `' . $table_name . '` WHERE username=:username LIMIT 1';
+		$sql = 'SELECT user_id,username,name,email FROM `'.$table_name.'` WHERE username=:username LIMIT 1';
 
 		$st = $db->prepare($sql);
         
@@ -146,15 +152,15 @@ if ($this->use_rc_database == true)
 
 		if ($row) {
 		/* User found. */
-		$email=$row['email'];
-	$name=$row['name'];
+		$email = $row['email'];
+	$name = $row['name'];
 	//To check 
-	$user_id=$row['user_id'];
-	$uid=$row['username'] . "_" . $this->mail_host;
+	$user_id = $row['user_id'];
+	$uid = $row['username']."_".$this->mail_host;
 		}
 
 		} catch (PDOException $e) {
-		throw new SimpleSAML_Error_Error('DATABASE_ERROR:' . $e->getMessage());
+		throw new SimpleSAML_Error_Error('DATABASE_ERROR:'.$e->getMessage());
 		}
 
 }
