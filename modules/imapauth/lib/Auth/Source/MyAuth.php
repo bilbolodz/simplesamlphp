@@ -76,59 +76,59 @@ class sspmod_imapauth_Auth_Source_MyAuth extends sspmod_core_Auth_UserPassBase {
 
 	//Defaults if there is no database entry
 	
-	$email=$username . "@" . $this->mail_host;
+	$email = $username."@".$this->mail_host;
 	$email_imap = "";
-	$name=$username;
-	$uid=$username;
+	$name = $username;
+	$uid = $username;
 
-	$imap = $this->imap_hostname . ":" . $this->imap_port . "/" . $this->imap_security;
+	$imap = $this->imap_hostname.":".$this->imap_port."/".$this->imap_security;
 	if (isset($this->imap_additional_options)) {
-		$imap= $imap . $this->imap_additional_options;
+		$imap = $imap.$this->imap_additional_options;
 	}
 	
-	$imap = "{" . $imap . "}";
+	$imap = "{".$imap."}";
 
 	$matches = array();
 	$stripbr = array();
 
-	$sess = imap_open($imap,$username,$password,OP_READONLY,1); 
+	$sess = imap_open($imap, $username, $password, OP_READONLY, 1); 
 
-		if ($sess === false ) {
+		if ($sess === false) {
 			throw new SimpleSAML_Error_Error('WRONGUSERPASS');
 		} else
 	{
-	if(($last=imap_num_msg($sess))>0)
+	if (($last = imap_num_msg($sess)) > 0)
 		{
-		$head1=imap_fetchheader($sess,$last);
-		preg_match('/Envelope\-to\:(.+)/m',$head1,$matches);
-		$candidate=trim(($matches[1]));
-			if(filter_var($candidate,FILTER_VALIDATE_EMAIL)) {
-				$email_imap=$candidate;
+		$head1 = imap_fetchheader($sess, $last);
+		preg_match('/Envelope\-to\:(.+)/m', $head1, $matches);
+		$candidate = trim(($matches[1]));
+			if (filter_var($candidate, FILTER_VALIDATE_EMAIL)) {
+				$email_imap = $candidate;
 			}
-		} elseif (imap_reopen($sess,$imap."Sent",OP_READONLY))
+		} elseif (imap_reopen($sess, $imap."Sent", OP_READONLY))
 		{
-		if(($last=imap_num_msg($sess))>0)
+		if (($last = imap_num_msg($sess)) > 0)
 			{
-			$head2=imap_fetchheader($sess,$last);
-			preg_match('/From\:(?:.*<| )([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)(?:>?)/m',$head2,$matches);
-			$candidate=trim(($matches[1]));
-			if(preg_match('/(?<=[<\[]).*?(?=[>\]]$)/',$candidate,$stripbr)) {
-								$candidate=$stripbr[0];
+			$head2 = imap_fetchheader($sess, $last);
+			preg_match('/From\:(?:.*<| )([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)(?:>?)/m', $head2, $matches);
+			$candidate = trim(($matches[1]));
+			if (preg_match('/(?<=[<\[]).*?(?=[>\]]$)/', $candidate, $stripbr)) {
+								$candidate = $stripbr[0];
 			}
-					if(filter_var($candidate,FILTER_VALIDATE_EMAIL)) {
-						$email_imap=$candidate;
+					if (filter_var($candidate, FILTER_VALIDATE_EMAIL)) {
+						$email_imap = $candidate;
 					}
 			}
 		}
 imap_close($sess); 
 	}
 
-	$uid=$username . "_" . $this->mail_host;
-	$user_id=$username . "_" . $this->mail_host;
-	$name=$username;
+	$uid = $username."_".$this->mail_host;
+	$user_id = $username."_".$this->mail_host;
+	$name = $username;
 
 	if ($email_imap != "") {
-		$email=$email_imap;
+		$email = $email_imap;
 	}
 
 if ($this->use_rc_database == true)
